@@ -26,9 +26,13 @@ func (n *NewFactory) GetNewProduct(name string) (pr NewProduct) {
 		return
 	}
 
+	// 拿到类型
 	tp := reflect.TypeOf(pr)
-	vp := reflect.Zero(tp)
 
+	// 新建对象
+	vp := reflect.New(tp)
+	vp = reflect.Indirect(vp)
+	// 这里为解决，拿到的interface为nil
 	ip := vp.Interface()
 	pr, ok = ip.(NewProduct)
 	if !ok {
@@ -43,13 +47,18 @@ func GetNewFactory() *NewFactory {
 	}
 }
 
-type NewCandy struct{}
+type NewCandy struct {
+	Color string
+}
 
 func (n *NewCandy) Name() string {
 	return "newCandy"
 }
 
 func (n *NewCandy) Desc() {
+	if len(n.Color) > 0 {
+		fmt.Println(n.Color)
+	}
 	fmt.Println("这个是新糖果")
 }
 
@@ -70,6 +79,10 @@ func main() {
 
 	pro := factory.GetNewProduct("newCandy")
 	if pro != nil {
-		pro.Desc()
+		candy, ok := pro.(*NewCandy)
+		if ok && candy != nil {
+			candy.Color = "红色"
+			candy.Desc()
+		}
 	}
 }
