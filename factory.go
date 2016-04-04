@@ -5,7 +5,7 @@ import (
 	"fmt"
 )
 
-# 简单工厂模式
+// 简单工厂模式
 
 type Product interface {
 	Desc()
